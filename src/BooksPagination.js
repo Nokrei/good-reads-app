@@ -1,32 +1,28 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Pagination from '@material-ui/lab/Pagination';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Pagination from "@material-ui/lab/Pagination";
 
-
-
-const BooksPagination = ()=>{
-    const useStyles = makeStyles((theme) => ({
-        root: {
-          '& > * + *': {
-            marginTop: theme.spacing(2),
-          },
-        },
-      }));
-      const classes = useStyles();
-  const [page, setPage] = React.useState(1);
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
+const BooksPagination = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      "& > * + *": {
+        marginTop: theme.spacing(2),
+        
+      },
+    },
+  }));
+  const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Typography>Page: {page}</Typography>
-      <Pagination count={10} page={page} onChange={handleChange} />
+    <div className={classes.root} style={{justifyContent:'flex-end !important'}}>
+      <Pagination
+        count={props.count}
+        page={props.page}
+        onChange={props.handleChange}
+      />
     </div>
   );
+};
 
-}
-
-
-export default BooksPagination
+export default BooksPagination;
