@@ -79,6 +79,7 @@ const MainScreen = () => {
                 key: book.id,
                 title: book.best_book.title,
                 author: book.best_book.author.name,
+                authorId: book.best_book.author.id,
                 rating: book.average_rating,
                 img: book.best_book.small_image_url,
                 day: book.original_publication_day,
@@ -148,9 +149,10 @@ const MainScreen = () => {
           ? results.map((item) => {
               return (
                 <BookCard
-                  key={item.key}
+                  key={item.key} 
                   title={item.title}
                   author={item.author} 
+                  authorId={item.authorId}
                   img={item.img}
                   rating={item.rating}
                   published={item.day + "." + item.month + "." + item.year}

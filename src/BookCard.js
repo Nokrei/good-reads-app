@@ -1,20 +1,21 @@
-import React,{useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import AppContext from './AppContext'
+import AppContext from "./AppContext";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 const BookCard = (props) => {
-   // Author name will be tied to global state
-   const [globalState, setGlobalState] = useContext(AppContext)
+  // Author name will be tied to global state
+  const [globalState, setGlobalState] = useContext(AppContext);
 
-    const handleAuthorClick= ()=>{
-      setGlobalState({
-        ...globalState,
-        author: props.author
-      })
-    }
+  const handleAuthorClick = () => {
+    setGlobalState({
+      ...globalState,
+      author: props.author,
+      authorId: props.authorId,
+    });
+  };
 
   const useStyles = makeStyles({
     root: {
@@ -38,16 +39,25 @@ const BookCard = (props) => {
       className={classes.root}
       style={{ width: "10em", Minheight: "20em", border: "1px solid grey" }}
     >
+      {props.authorId}
       <CardContent>
         <img src={props.img} alt="Book Image" style={{ height: "5em" }} />
         <Typography variant="h6">{props.title}</Typography>
-
+        <Typography variant="body1">{props.isbn}</Typography>
+        <Typography variant="body1">{props.reviewCount}</Typography>
+        <Typography variant="body1">{props.link}</Typography>
+        <Typography variant="body1">{props.pages}</Typography>
+        <Typography variant="body1">{props.format}</Typography>
+        <Typography variant="body1">{props.ratingCount}</Typography>
+        <Typography variant="body1">{props.desc}</Typography>
         <Typography variant="body1">
-          By <Link to="/authorScreen" onClick={handleAuthorClick}>{props.author}</Link>
+          <Link to="/authorScreen" onClick={handleAuthorClick}>
+            {props.author}
+          </Link>
         </Typography>
 
-        <Typography variant="body1">Rating: {props.rating}</Typography>
-        <Typography variant="body1">Published: {props.published}</Typography>
+        <Typography variant="body1">{props.rating}</Typography>
+        <Typography variant="body1">{props.published}</Typography>
       </CardContent>
     </Card>
   );
