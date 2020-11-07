@@ -13,7 +13,7 @@ const MainScreen = () => {
 
   const [gridClass, setGridClass] = useState("");
   useEffect(() => {
-    if (width > 500) {
+    if (width > 1024) {
       setGridClass("main__cardContainer--wide");
     } else {
       setGridClass("main__cardContainer--narrow");
@@ -23,7 +23,7 @@ const MainScreen = () => {
   // Variable to capture value of user's search
   let searchField;
 
-  // API key for Good Reads API, not stored in .env but hardcoded 
+  // API key for Good Reads API, not stored in .env but hardcoded
   // Netlify has problems with .env
   const apiKey = "khW7jdeXSXEe37oDLAEA";
 
@@ -63,12 +63,24 @@ const MainScreen = () => {
     stopNodes: ["parse-me-as-string"],
   };
 
-  // Function to handle search.
+  // Function to handle search on click.
   const handleSearch = () => {
     setQuery({
       ...query,
       search: searchField.value,
     });
+  };
+
+  // Function to handle search on key down (enter)
+  // GoodReads API has a rate limit of 1 per s
+  // so do not want to continuously search with every key stroke. 
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      setQuery({
+        ...query,
+        search: searchField.value,
+      });
+    }
   };
 
   // Function to handle pagination.
@@ -77,7 +89,7 @@ const MainScreen = () => {
   };
 
   // Using Axios to get book list from Good Reads API.
-  // Usign cors-anywhere as GoodReads does not include 
+  // Usign cors-anywhere as GoodReads does not include
   // the CORS header in ANY of their api calls.
   useEffect(() => {
     if (query.search.length > 0) {
@@ -154,6 +166,7 @@ const MainScreen = () => {
         style={{ display: "flex", justifyContent: "center" }}
       >
         <TextField
+          onKeyDown={handleKeyDown}
           style={{ width: "16em", backgroundColor: "#4e342e" }}
           variant="outlined"
           color="secondary"
@@ -164,7 +177,9 @@ const MainScreen = () => {
           <Typography variant="body2">Search</Typography>
         </Button>
       </div>
-      <Typography variant='subtitle2' color='secondary'>Search powered by Goodreads API</Typography>
+      <Typography variant="subtitle2" color="secondary">
+        Search powered by Goodreads API
+      </Typography>
       <br />
       <div style={{ display: "grid", justifyItems: "center" }}>
         {query.search.length > 0 &&

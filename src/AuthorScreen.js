@@ -14,7 +14,7 @@ const AuthorScreen = () => {
 
   const [gridClass, setGridClass] = useState("");
   useEffect(() => {
-    if (width > 500) {
+    if (width > 1024) {
       setGridClass("author__cardContainer--wide");
     } else {
       setGridClass("author__cardContainer--narrow");

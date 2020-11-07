@@ -1,8 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter, Redirect, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter, Switch } from "react-router-dom";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { blue, red, orange, green, brown, deepOrange,grey } from "@material-ui/core/colors";
+import { brown } from "@material-ui/core/colors";
 import AppContext from "./AppContext";
 import LayoutRoute from "./LayoutRoute";
 import MainScreen from "./MainScreen";
@@ -16,15 +16,13 @@ const App = () => {
       htmlFontSize: 18,
     },
     palette: {
-      type: 'dark',
+      type: "dark",
       primary: {
         main: brown[800],
-
       },
-      secondary:{
-        main:'#ede2d1'
+      secondary: {
+        main: "#ede2d1",
       },
-      
     },
   });
   return (
