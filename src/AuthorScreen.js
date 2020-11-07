@@ -3,10 +3,24 @@ import Axios from "axios";
 import AppContext from "./AppContext";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import useWindowDimensions from "./useWindowDimensions";
 import BookCard from "./BookCard";
 import BooksPagination from "./BooksPagination";
-import zIndex from "@material-ui/core/styles/zIndex";
+
 const AuthorScreen = () => {
+
+  // Custom hook to detect browser width and adjust style accodringly
+  const { width } = useWindowDimensions();
+
+  const [gridClass, setGridClass] = useState("");
+  useEffect(() => {
+    if (width > 500) {
+      setGridClass("author__cardContainer--wide");
+    } else {
+      setGridClass("author__cardContainer--narrow");
+    }
+  }, [width]);
+
   //Get author name and ID from global state
   const [globalState, setGlobalState] = useContext(AppContext);
 
@@ -127,7 +141,7 @@ const AuthorScreen = () => {
             justifySelf: "center",
             justifyItems: "center",
             color: "#e0e0e0",
-            minWidth: "30em",
+            minWidth: "20em",
             maxWidth: "80em",
             backgroundColor: "#bdbdbd",
             color: "#212121",
@@ -137,7 +151,7 @@ const AuthorScreen = () => {
         >
           <img
             src={authorData.image}
-            style={{ height: "30em", opacity:'1'}}
+            style={{ Maxheight: "30em", opacity: "1" }}
           />
           <Typography variant="h5">{authorData.name}</Typography>
           <Typography variant="body1">Fans: {authorData.fans}</Typography>
@@ -168,20 +182,16 @@ const AuthorScreen = () => {
         />
       ) : null}
       <div
-        className="cardContainer"
-        style={{
-          display: "grid",
-          gridTemplateColumns:'1fr',
-          gridRowGap: "1em",
-          justifyItems: "center",
-        }}
+        className={gridClass}
+       
       >
         {Array.isArray(authorBookResults) &&
           authorBookResults.map((authorBookItem) => {
             return (
               <BookCard
                 style={{
-                  width: "30em",
+                  Minwidth: "20em",
+                  maxWidth:'30em',
                   Minheight: "20em",
                   textAlign: "center",
                   backgroundColor: "#bdbdbd",

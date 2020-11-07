@@ -28,3 +28,17 @@ body {
   grid-row-gap: 1em;
   justify-items: center;
 }
+.author__cardContainer--wide {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 1em;
+  justify-items: center;
+}
+.author__cardContainer--narrow {
+  
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 1em;
+  justify-items: center;
+  
+}
