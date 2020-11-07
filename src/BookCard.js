@@ -35,33 +35,38 @@ const BookCard = (props) => {
   });
   const classes = useStyles();
   return (
-    <Card
-      className={classes.root}
-      style={props.style}
-    >
-      
+    <Card className="card" style={props.style}>
       <CardContent>
-      <span style={{visibility:'hidden', position:'absolute'}}>{props.authorId}</span>
-        <img src={props.img} alt="Book Image" style={{ Maxheight: "12em", opacity:'1' }} />
-        <Typography variant="h6" style={{textAlign:'center'}}>{props.title}</Typography>
+        <span style={{ visibility: "hidden", position: "absolute" }}>
+          {props.authorId}
+        </span>
+        <img
+          src={props.img}
+          alt="Book Image"
+          style={{ Maxheight: "12em", minHeight: "10em", opacity: "1" }}
+        />
+        <Typography variant="h6" style={{ textAlign: "center" }}>
+          {props.title}
+        </Typography>
         <Typography variant="body1">{props.isbn}</Typography>
         <Typography variant="body1">{props.reviewCount}</Typography>
-  <Typography variant="subtitle2"><a href={props.link} target="_blank">Goodreads page</a></Typography>
+        <Typography variant="body1">
+          <a href={props.link} target="_blank">
+            Goodreads page
+          </a>
+        </Typography>
         <Typography variant="body1">{props.pages}</Typography>
         <Typography variant="body1">{props.format}</Typography>
         <Typography variant="body1">{props.rating}</Typography>
         <Typography variant="body1">{props.ratingCount}</Typography>
         <Typography variant="body1">{props.published}</Typography>
-        <br/>
+        <br />
         <Typography variant="body1">{props.desc}</Typography>
         <Typography variant="body1">
           <Link to="/authorScreen" onClick={handleAuthorClick}>
             {props.author}
           </Link>
         </Typography>
-
-        
-        
       </CardContent>
     </Card>
   );

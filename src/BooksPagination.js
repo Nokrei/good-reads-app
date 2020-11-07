@@ -8,6 +8,7 @@ const BooksPagination = (props) => {
     root: {
       "& > * + *": {
         marginTop: theme.spacing(2),
+        
       },
     },
   }));
@@ -17,9 +18,10 @@ const BooksPagination = (props) => {
     <div
       className={classes.root}
       style={{
-        display: "flex",
-        justifyContent: "center",
+        display: "grid",
+        justifyItems: "center",
         margin: "1em 0 1em 0",
+        
       }}
     >
       <Pagination

@@ -19,9 +19,10 @@ const App = () => {
       type: 'dark',
       primary: {
         main: brown[800],
+
       },
       secondary:{
-        main:grey[100]
+        main:'#ede2d1'
       },
       
     },

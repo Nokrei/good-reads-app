@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import useWindowDimensions from "./useWindowDimensions";
 import BookCard from "./BookCard";
 import BooksPagination from "./BooksPagination";
+import preloader from './resources/99.gif'
 const MainScreen = () => {
   // Custom hook to detect browser width and adjust style accodringly
   const { width } = useWindowDimensions();
@@ -116,7 +117,10 @@ const MainScreen = () => {
         ) {
           const card = bookResp.GoodreadsResponse.search.results.work;
           console.log(card);
-
+          setSearchInfo({
+            totalResults: 1,
+            pages: 1,
+          });
           setResults(card);
           setErrors([]);
         } else {
@@ -138,23 +142,27 @@ const MainScreen = () => {
     <div className="main">
       <div
         className="search"
-        style={{ display: "flex", justifyContent: "center" }}
+        style={{ display: "flex", justifyContent: "center"}}
       >
+        
         <TextField
-          style={{ width: "16em", backgroundColor:'#bdbdbd', }}
+          style={{ width: "16em", backgroundColor: "#4e342e" }}
           variant="outlined"
           color="secondary"
           inputRef={(comp) => (searchField = comp)}
           label="Search by title, author or ISBN"
         ></TextField>
-        <Button onClick={handleSearch} variant="contained" color="primary">
-          Search
+        <Button onClick={handleSearch} variant="contained" color="secondary">
+          <Typography variant='body2'>Search</Typography>
         </Button>
       </div>
       <br />
-      {query.search.length > 0 && errors.length === 0 && (
-        <div>
-          <Typography variant="body1" color="secondary">
+      <div style={{display:'grid', justifyItems:'center'}}>
+      {(query.search.length > 0 &&
+      errors.length === 0 &&
+      searchInfo.totalResults > 1) ? (
+        <div style={{color:"#ede2d1",  background: 'rgba(1, 1, 1, 0.5)', Maxwidth:'27em', marginBottom:'1em'}}>
+          <Typography variant="body1" >
             Found {searchInfo.totalResults} results matching your query:{" "}
             {query.search}
           </Typography>
@@ -164,7 +172,10 @@ const MainScreen = () => {
             handleChange={handleChange}
           />
         </div>
-      )}
+      ) : null}
+      </div>
+      
+      {query.search.length > 0 && searchInfo.totalResults < 1 ? <img src={preloader}/>:null}
       <div className={gridClass}>
         {Array.isArray(results)
           ? results.map((item) => {
@@ -174,7 +185,7 @@ const MainScreen = () => {
                     width: "10em",
                     Minheight: "20em",
                     textAlign: "center",
-                    backgroundColor: "#bdbdbd",
+                    backgroundColor: "#ede2d1",
                     color: "#212121",
                     opacity: "0.95",
                   }}
@@ -195,12 +206,13 @@ const MainScreen = () => {
               width: "10em",
               Minheight: "20em",
               textAlign: "center",
-              backgroundColor: "#bdbdbd",
+              backgroundColor: "#ede2d1",
               color: "#212121",
               opacity: "0.95",
             }}
             title={results.best_book.title}
             author={results.best_book.author.name}
+            authorId={results.best_book.author.id}
             img={results.best_book.image_url}
             rating={results.average_rating}
             published={
@@ -213,7 +225,9 @@ const MainScreen = () => {
           />
         )}
       </div>
-      {query.search.length > 0 && errors.length === 0 && (
+      {query.search.length > 0 &&
+      errors.length === 0 &&
+      searchInfo.totalResults > 1 ? (
         <div>
           <BooksPagination
             count={searchInfo.pages.toFixed(0)}
@@ -221,7 +235,7 @@ const MainScreen = () => {
             handleChange={handleChange}
           />
         </div>
-      )}
+      ) : null}
       {errors.length > 0 ? (
         <div
           style={{ display: "grid", justifyItems: "center", opacity: "0.7" }}

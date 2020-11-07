@@ -22,6 +22,9 @@ body {
   grid-row-gap: 1em;
   justify-items: center;
 }
+.main__cardContainer--wide:nth-child(0){
+  border: 5px solid black
+}
 .main__cardContainer--narrow {
   display: grid;
   grid-template-columns: 1fr;
@@ -41,4 +44,11 @@ body {
   grid-row-gap: 1em;
   justify-items: center;
   
+}
+.card{
+  min-width: 275px;
+  
+}
+.card:hover{
+  border:2px solid rgba(134, 60, 17, 0.452)
 }

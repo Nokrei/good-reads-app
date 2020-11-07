@@ -143,7 +143,7 @@ const AuthorScreen = () => {
             color: "#e0e0e0",
             minWidth: "20em",
             maxWidth: "80em",
-            backgroundColor: "#bdbdbd",
+            backgroundColor: "#ede2d1",
             color: "#212121",
             opacity: "0.95",
             padding: "1em",
@@ -168,7 +168,7 @@ const AuthorScreen = () => {
             {authorData.about}
           </Typography>
           <br />
-          <Button variant="contained" onClick={handleAuthorBooks}>
+          <Button variant="contained" color='primary'onClick={handleAuthorBooks}>
             Show author's books
           </Button>
         </div>
@@ -194,13 +194,13 @@ const AuthorScreen = () => {
                   maxWidth:'30em',
                   Minheight: "20em",
                   textAlign: "center",
-                  backgroundColor: "#bdbdbd",
+                  backgroundColor: "#ede2d1",
                   color: "#212121",
                   opacity: "0.95",
                 }}
                 key={authorBookItem.key}
                 img={authorBookItem.img}
-                title={authorBookItem.title}
+                title={authorBookItem.title.replace(/ *\([^)]*\) */g, "")}
                 isbn={"ISBN: " + authorBookItem.isbn}
                 reviewCount={"Reviews: " + authorBookItem.reviewCount}
                 link={authorBookItem.link}
