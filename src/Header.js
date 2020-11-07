@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
   const classes = useStyles();
   return (
-    <div className={classes.root} id="top">
+    <div className={classes.root} id="top" >
       <AppBar position="static" style={{ marginBottom: "1em", opacity:'0.95' }}>
         <Toolbar>
           <Typography variant="h4" className={classes.title}>
-            <Link to="/" style={{textDecoration:'none', color:'inherit'}}>Book Search</Link>
+            <Link to="/" style={{textDecoration:'none', color:'#ede2d1'}}>Book Search</Link>
           </Typography>
         </Toolbar>
       </AppBar>

@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Typography from "@material-ui/core/Typography";
-import AppContext from "./AppContext";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import useWindowDimensions from "./useWindowDimensions";
 import BookCard from "./BookCard";
 import BooksPagination from "./BooksPagination";
-import preloader from './resources/99.gif'
+import preloader from "./resources/99.gif";
 const MainScreen = () => {
   // Custom hook to detect browser width and adjust style accodringly
   const { width } = useWindowDimensions();
@@ -21,11 +20,12 @@ const MainScreen = () => {
     }
   }, [width]);
 
+  // Variable to capture value of user's search
   let searchField;
-  // API key for Good Reads API
-  const apiKey = "khW7jdeXSXEe37oDLAEA";
 
-  const [globalState, setGlobalState] = useContext(AppContext);
+  // API key for Good Reads API, not stored in .env but hardcoded 
+  // Netlify has problems with .env
+  const apiKey = "khW7jdeXSXEe37oDLAEA";
 
   // State variables
   const [errors, setErrors] = useState([]);
@@ -63,22 +63,22 @@ const MainScreen = () => {
     stopNodes: ["parse-me-as-string"],
   };
 
-  // Function to handle search
+  // Function to handle search.
   const handleSearch = () => {
     setQuery({
       ...query,
       search: searchField.value,
     });
-    console.log(globalState);
   };
 
-  // Function to handle pagination
+  // Function to handle pagination.
   const handleChange = (event, value) => {
     setPage(value);
   };
 
   // Using Axios to get book list from Good Reads API.
-  // Usign cors-anywhere to bypass cors
+  // Usign cors-anywhere as GoodReads does not include 
+  // the CORS header in ANY of their api calls.
   useEffect(() => {
     if (query.search.length > 0) {
       Axios.get(
@@ -86,6 +86,8 @@ const MainScreen = () => {
       ).then((response) => {
         const bookResp = parser.parse(response.data, [options]);
         console.log(bookResp);
+
+        // To be executed when user searches by title or author name
         if (Array.isArray(bookResp.GoodreadsResponse.search.results.work)) {
           const card = bookResp.GoodreadsResponse.search.results.work.map(
             (book) => {
@@ -102,28 +104,38 @@ const MainScreen = () => {
               };
             }
           );
-
+          // Setting state varable to feed data to pagination
           setSearchInfo({
             totalResults: bookResp.GoodreadsResponse.search["total-results"],
             pages: bookResp.GoodreadsResponse.search["total-results"] / 20 + 1,
           });
 
+          // Setting state variable to feed data to book cards
           setResults(card);
 
+          // Emptying the errors array
           setErrors([]);
         } else if (
+          // To be executed when user searches by ISBN (1 result only)
           !Array.isArray(bookResp.GoodreadsResponse.search.results.work) &&
           typeof bookResp.GoodreadsResponse.search.results != "string"
         ) {
           const card = bookResp.GoodreadsResponse.search.results.work;
-          console.log(card);
+
+          // Setting state varable to feed data to pagination,
+          // want pagiation to appear only for multiple results
           setSearchInfo({
             totalResults: 1,
             pages: 1,
           });
+
+          // Setting state variable to feed data to book card(s)
           setResults(card);
+
+          // Emptying the errors array
           setErrors([]);
         } else {
+          // If no results are found, populate errors with message
           setErrors("No results were found for your query, please try again.");
           setResults([]);
           setSearchInfo({
@@ -134,17 +146,13 @@ const MainScreen = () => {
       });
     }
   }, [query, page]);
-  useEffect(() => {
-    //console.log(results);
-  }, [results]);
-  //console.log(errors);
+
   return (
     <div className="main">
       <div
         className="search"
-        style={{ display: "flex", justifyContent: "center"}}
+        style={{ display: "flex", justifyContent: "center" }}
       >
-        
         <TextField
           style={{ width: "16em", backgroundColor: "#4e342e" }}
           variant="outlined"
@@ -153,29 +161,39 @@ const MainScreen = () => {
           label="Search by title, author or ISBN"
         ></TextField>
         <Button onClick={handleSearch} variant="contained" color="secondary">
-          <Typography variant='body2'>Search</Typography>
+          <Typography variant="body2">Search</Typography>
         </Button>
       </div>
+      <Typography variant='subtitle2' color='secondary'>Search powered by Goodreads API</Typography>
       <br />
-      <div style={{display:'grid', justifyItems:'center'}}>
-      {(query.search.length > 0 &&
-      errors.length === 0 &&
-      searchInfo.totalResults > 1) ? (
-        <div style={{color:"#ede2d1",  background: 'rgba(1, 1, 1, 0.5)', Maxwidth:'27em', marginBottom:'1em'}}>
-          <Typography variant="body1" >
-            Found {searchInfo.totalResults} results matching your query:{" "}
-            {query.search}
-          </Typography>
-          <BooksPagination
-            count={searchInfo.pages.toFixed(0)}
-            page={page}
-            handleChange={handleChange}
-          />
-        </div>
-      ) : null}
+      <div style={{ display: "grid", justifyItems: "center" }}>
+        {query.search.length > 0 &&
+        errors.length === 0 &&
+        searchInfo.totalResults > 1 ? (
+          <div
+            style={{
+              color: "#ede2d1",
+              background: "rgba(1, 1, 1, 0.5)",
+              Maxwidth: "27em",
+              marginBottom: "1em",
+            }}
+          >
+            <Typography variant="body1">
+              Found {searchInfo.totalResults} results matching your query:{" "}
+              {query.search}
+            </Typography>
+            <BooksPagination
+              count={searchInfo.pages.toFixed(0)}
+              page={page}
+              handleChange={handleChange}
+            />
+          </div>
+        ) : null}
       </div>
-      
-      {query.search.length > 0 && searchInfo.totalResults < 1 ? <img src={preloader}/>:null}
+
+      {query.search.length > 0 && searchInfo.totalResults < 1 ? (
+        <img src={preloader} />
+      ) : null}
       <div className={gridClass}>
         {Array.isArray(results)
           ? results.map((item) => {

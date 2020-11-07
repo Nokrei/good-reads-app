@@ -9,7 +9,7 @@ import BooksPagination from "./BooksPagination";
 
 const AuthorScreen = () => {
 
-  // Custom hook to detect browser width and adjust style accodringly
+  // Custom hook to detect browser width and adjust style accodringly.
   const { width } = useWindowDimensions();
 
   const [gridClass, setGridClass] = useState("");
@@ -21,13 +21,14 @@ const AuthorScreen = () => {
     }
   }, [width]);
 
-  //Get author name and ID from global state
+  //Get author name and ID from global state.
   const [globalState, setGlobalState] = useContext(AppContext);
 
-  // API key for Good Reads API
+  // API key for Good Reads API, not stored in .env but hardcoded
+  // Netlify has problems with .env.
   const apiKey = "khW7jdeXSXEe37oDLAEA";
 
-  // State variables
+  // State variables.
   const [authorData, setAuthorData] = useState({
     name: "",
     fans: "",
@@ -43,10 +44,10 @@ const AuthorScreen = () => {
     totalResults: 0,
     pages: 0,
   });
-  // Variable for HTML parser
+  // Variable for HTML parser.
   const parseHtml = require("html-react-parser");
 
-  // Variables for Fast Xml Parser
+  // Variables for Fast Xml Parser.
   const parser = require("fast-xml-parser");
   const he = require("he");
   const options = {
@@ -68,17 +69,18 @@ const AuthorScreen = () => {
     tagValueProcessor: (val, tagName) => he.decode(val), //default is a=>a
     stopNodes: ["parse-me-as-string"],
   };
-  // Function to handle author's books display
+  // Function to handle author's books display.
   const handleAuthorBooks = () => {
     setBookQuery(globalState.authorId);
   };
-  // Function to handle pagination
+  // Function to handle pagination.
   const handleChange = (event, value) => {
     setPage(value);
   };
 
   // Using Axios to get author details from Good Reads API.
-  // Usign cors-anywhere to bypass cors
+  // Usign cors-anywhere as GoodReads does not include 
+  // the CORS header in ANY of their api calls.
   useEffect(() => {
     Axios.get(
       `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/author/show/${globalState.authorId}?format=xml&key=${apiKey}`
@@ -101,7 +103,8 @@ const AuthorScreen = () => {
   }, [globalState.authorId]);
 
   // Using Axios to get author's books from Good Reads API.
-  // Usign cors-anywhere to bypass cors
+  // Usign cors-anywhere as GoodReads does not include 
+  // the CORS header in ANY of their api calls.
   useEffect(() => {
     Axios.get(
       `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/author/list/${bookQuery}?format=xml&key=${apiKey}&page=${page}`
