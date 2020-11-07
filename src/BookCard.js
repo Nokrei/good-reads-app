@@ -42,11 +42,11 @@ const BookCard = (props) => {
       
       <CardContent>
       <span style={{visibility:'hidden', position:'absolute'}}>{props.authorId}</span>
-        <img src={props.img} alt="Book Image" style={{ height: "12em" }} />
+        <img src={props.img} alt="Book Image" style={{ height: "12em", opacity:'1' }} />
         <Typography variant="h6" style={{textAlign:'center'}}>{props.title}</Typography>
         <Typography variant="body1">{props.isbn}</Typography>
         <Typography variant="body1">{props.reviewCount}</Typography>
-  <Typography variant="body1"><a href={props.link} target="_blank">{props.link}</a></Typography>
+  <Typography variant="subtitle2"><a href={props.link} target="_blank">{props.link}</a></Typography>
         <Typography variant="body1">{props.pages}</Typography>
         <Typography variant="body1">{props.format}</Typography>
         <Typography variant="body1">{props.rating}</Typography>

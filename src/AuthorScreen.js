@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import BookCard from "./BookCard";
 import BooksPagination from "./BooksPagination";
+import zIndex from "@material-ui/core/styles/zIndex";
 const AuthorScreen = () => {
   //Get author name and ID from global state
   const [globalState, setGlobalState] = useContext(AppContext);
@@ -120,31 +121,43 @@ const AuthorScreen = () => {
   return (
     <div>
       <div style={{ display: "grid", justifyItems: "center" }}>
-        <img
-          src={authorData.image}
-          style={{ height: "30em", textAlign: "center" }}
-        />
-        <Typography variant="h5">{authorData.name}</Typography>
-        <Typography variant="body1">Fans: {authorData.fans}</Typography>
-        <Typography variant="body1">
-          Followers: {authorData.followers}{" "}
-        </Typography>
-        <Typography variant="body1">
-          Hometown: {authorData.hometown}{" "}
-        </Typography>
-        <br />
-        <Typography variant="h6">About the author</Typography>
-        <br />
-        <Typography
-          variant="body2"
-          style={{ textAlign: "justify", minWidth: "30em", maxWidth: "80em" }}
+        <div
+          style={{
+            display: "grid",
+            justifySelf: "center",
+            justifyItems: "center",
+            color: "#e0e0e0",
+            minWidth: "30em",
+            maxWidth: "80em",
+            backgroundColor: "#bdbdbd",
+            color: "#212121",
+            opacity: "0.95",
+            padding: "1em",
+          }}
         >
-          {authorData.about}
-        </Typography>
-        <br />
-        <Button variant="contained" onClick={handleAuthorBooks}>
-          Show author's books
-        </Button>
+          <img
+            src={authorData.image}
+            style={{ height: "30em", opacity:'1'}}
+          />
+          <Typography variant="h5">{authorData.name}</Typography>
+          <Typography variant="body1">Fans: {authorData.fans}</Typography>
+          <Typography variant="body1">
+            Followers: {authorData.followers}{" "}
+          </Typography>
+          <Typography variant="body1">
+            Hometown: {authorData.hometown}{" "}
+          </Typography>
+          <br />
+          <Typography variant="h6">About the author</Typography>
+          <br />
+          <Typography variant="body2" style={{ textAlign: "justify" }}>
+            {authorData.about}
+          </Typography>
+          <br />
+          <Button variant="contained" onClick={handleAuthorBooks}>
+            Show author's books
+          </Button>
+        </div>
       </div>
 
       {bookQuery.length != "" ? (
@@ -158,7 +171,7 @@ const AuthorScreen = () => {
         className="cardContainer"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns:'1fr',
           gridRowGap: "1em",
           justifyItems: "center",
         }}
@@ -170,8 +183,10 @@ const AuthorScreen = () => {
                 style={{
                   width: "30em",
                   Minheight: "20em",
-                  border: "1px solid grey",
                   textAlign: "center",
+                  backgroundColor: "#bdbdbd",
+                  color: "#212121",
+                  opacity: "0.95",
                 }}
                 key={authorBookItem.key}
                 img={authorBookItem.img}
@@ -179,17 +194,23 @@ const AuthorScreen = () => {
                 isbn={"ISBN: " + authorBookItem.isbn}
                 reviewCount={"Reviews: " + authorBookItem.reviewCount}
                 link={authorBookItem.link}
-                pages={'Pages: '+authorBookItem.pages}
-                format={'Format: '+authorBookItem.format}
-                ratingCount={"Number of ratings: "+authorBookItem.ratingCount}
-                rating={"Rating: "+authorBookItem.rating}
-                published={'Published: '+authorBookItem.published}
-                
+                pages={"Pages: " + authorBookItem.pages}
+                format={"Format: " + authorBookItem.format}
+                ratingCount={"Number of ratings: " + authorBookItem.ratingCount}
+                rating={"Rating: " + authorBookItem.rating}
+                published={"Published: " + authorBookItem.published}
                 desc={parseHtml(String(authorBookItem.desc))}
               />
             );
           })}
       </div>
+      {bookQuery.length != "" ? (
+        <BooksPagination
+          count={searchInfo.pages.toFixed(0)}
+          page={page}
+          handleChange={handleChange}
+        />
+      ) : null}
     </div>
   );
 };

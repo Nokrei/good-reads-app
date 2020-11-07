@@ -1,17 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import Typography from "@material-ui/core/Typography";
-import AppContext from './AppContext'
+import AppContext from "./AppContext";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import useWindowDimensions from "./useWindowDimensions";
 import BookCard from "./BookCard";
-import BooksPagination from './BooksPagination'
+import BooksPagination from "./BooksPagination";
 const MainScreen = () => {
+  // Custom hook to detect browser width and adjust style accodringly
+  const { width } = useWindowDimensions();
+
+  const [gridClass, setGridClass] = useState("");
+  useEffect(() => {
+    if (width > 500) {
+      setGridClass("main__cardContainer--wide");
+    } else {
+      setGridClass("main__cardContainer--narrow");
+    }
+  }, [width]);
+
   let searchField;
   // API key for Good Reads API
   const apiKey = "khW7jdeXSXEe37oDLAEA";
 
-  const [globalState, setGlobalState] = useContext(AppContext)
+  const [globalState, setGlobalState] = useContext(AppContext);
 
   // State variables
   const [errors, setErrors] = useState([]);
@@ -19,8 +32,8 @@ const MainScreen = () => {
   const [page, setPage] = useState(1);
   const [searchInfo, setSearchInfo] = useState({
     totalResults: 0,
-    pages: 0
-  })
+    pages: 0,
+  });
   const [query, setQuery] = useState({
     search: "",
     result: "",
@@ -88,14 +101,14 @@ const MainScreen = () => {
               };
             }
           );
-          
+
           setSearchInfo({
-            totalResults: bookResp.GoodreadsResponse.search['total-results'],
-            pages: bookResp.GoodreadsResponse.search['total-results']/20+1
-          })
-          
+            totalResults: bookResp.GoodreadsResponse.search["total-results"],
+            pages: bookResp.GoodreadsResponse.search["total-results"] / 20 + 1,
+          });
+
           setResults(card);
-          
+
           setErrors([]);
         } else if (
           !Array.isArray(bookResp.GoodreadsResponse.search.results.work) &&
@@ -103,17 +116,16 @@ const MainScreen = () => {
         ) {
           const card = bookResp.GoodreadsResponse.search.results.work;
           console.log(card);
-          
+
           setResults(card);
           setErrors([]);
-          
         } else {
           setErrors("No results were found for your query, please try again.");
           setResults([]);
           setSearchInfo({
             totalResults: 0,
-            pages: 0
-          })
+            pages: 0,
+          });
         }
       });
     }
@@ -124,54 +136,69 @@ const MainScreen = () => {
   //console.log(errors);
   return (
     <div className="main">
-      <div className='search' style={{display:'flex',justifyContent:'center'}}>
-      <TextField
-        style={{width:'16em'}}
-        variant='outlined'
-        inputRef={(comp) => (searchField = comp)}
-        label="Search by title, author or ISBN"
-      ></TextField>
-      <Button onClick={handleSearch} variant='contained' color='primary'>Search</Button>
-      </div> 
-      <br />
-      {(query.search.length>0 && errors.length === 0)&&
-      (<div>
-         <Typography variant='body1'>Found {searchInfo.totalResults} results matching your query: {query.search}</Typography>
-      <BooksPagination 
-      count={searchInfo.pages.toFixed(0)}
-      page={page}
-      handleChange={handleChange}
-      />
-      </div>      
-      )
-    }      
       <div
-        className="cardContainer"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gridRowGap: "1em",
-          justifyItems:'center'
-        }}
-      >      
+        className="search"
+        style={{ display: "flex", justifyContent: "center" }}
+      >
+        <TextField
+          style={{ width: "16em", backgroundColor:'#bdbdbd', }}
+          variant="outlined"
+          color="secondary"
+          inputRef={(comp) => (searchField = comp)}
+          label="Search by title, author or ISBN"
+        ></TextField>
+        <Button onClick={handleSearch} variant="contained" color="primary">
+          Search
+        </Button>
+      </div>
+      <br />
+      {query.search.length > 0 && errors.length === 0 && (
+        <div>
+          <Typography variant="body1" color="secondary">
+            Found {searchInfo.totalResults} results matching your query:{" "}
+            {query.search}
+          </Typography>
+          <BooksPagination
+            count={searchInfo.pages.toFixed(0)}
+            page={page}
+            handleChange={handleChange}
+          />
+        </div>
+      )}
+      <div className={gridClass}>
         {Array.isArray(results)
           ? results.map((item) => {
               return (
                 <BookCard
-                  style={{width: "10em", Minheight: "20em", border: "1px solid grey", textAlign:'center' }}
-                  key={item.key} 
+                  style={{
+                    width: "10em",
+                    Minheight: "20em",
+                    textAlign: "center",
+                    backgroundColor: "#bdbdbd",
+                    color: "#212121",
+                    opacity: "0.95",
+                  }}
+                  key={item.key}
                   title={item.title.replace(/ *\([^)]*\) */g, "")}
-                  author={'By: '+ item.author} 
+                  author={"By: " + item.author}
                   authorId={item.authorId}
                   img={item.img}
-                  rating={'Rating: '+item.rating}
-                  published={'Published: '+item.year}
+                  rating={"Rating: " + item.rating}
+                  published={"Published: " + item.year}
                 />
               );
             })
           : null}
         {!Array.isArray(results) && (
           <BookCard
+            style={{
+              width: "10em",
+              Minheight: "20em",
+              textAlign: "center",
+              backgroundColor: "#bdbdbd",
+              color: "#212121",
+              opacity: "0.95",
+            }}
             title={results.best_book.title}
             author={results.best_book.author.name}
             img={results.best_book.image_url}
@@ -186,22 +213,27 @@ const MainScreen = () => {
           />
         )}
       </div>
-      {(query.search.length>0 && errors.length === 0)&&
-      (<div>
-         
-      <BooksPagination 
-      count={searchInfo.pages.toFixed(0)}
-      page={page}
-      handleChange={handleChange}
-      />
-      </div>
-       
-      )
-    }
+      {query.search.length > 0 && errors.length === 0 && (
+        <div>
+          <BooksPagination
+            count={searchInfo.pages.toFixed(0)}
+            page={page}
+            handleChange={handleChange}
+          />
+        </div>
+      )}
       {errors.length > 0 ? (
-        <Typography variant="body1" color="secondary">
-          {errors}
-        </Typography>
+        <div
+          style={{ display: "grid", justifyItems: "center", opacity: "0.7" }}
+        >
+          <Typography
+            variant="body1"
+            color="error"
+            style={{ backgroundColor: "white", width: "30em" }}
+          >
+            {errors}
+          </Typography>
+        </div>
       ) : null}
     </div>
   );

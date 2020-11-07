@@ -12,7 +12,7 @@ const Footer = () => {
         padding:'1em 0 1em 0'
       }}
     >
-      <Typography variant="body1">
+      <Typography variant="body1" color='secondary' >
         Created by Piotr Mrozowski for Veeqo {new Date().getFullYear()}
       </Typography>
     </div>

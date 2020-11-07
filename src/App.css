@@ -1,6 +1,10 @@
 html,
 body {
   height: 100%;
+  background-image: url("https://images.unsplash.com/photo-1472173148041-00294f0814a2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+  background-repeat: repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .main {
@@ -11,4 +15,16 @@ body {
   display: grid;
   grid-template-rows: 1fr 11fr 1fr;
   height: 100%;
+}
+.main__cardContainer--wide {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-row-gap: 1em;
+  justify-items: center;
+}
+.main__cardContainer--narrow {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 1em;
+  justify-items: center;
 }
