@@ -20,7 +20,7 @@ const Header = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" style={{marginBottom:'1em'}}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             Book Search

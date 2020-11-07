@@ -1,17 +1,14 @@
 html,
 body {
   height: 100%;
-  
 }
 
-
-
-.main{
+.main {
   text-align: center;
 }
 
 #root {
   display: grid;
-  grid-template-rows: 1fr 11fr  1fr ;
+  grid-template-rows: 1fr 11fr 1fr;
   height: 100%;
 }

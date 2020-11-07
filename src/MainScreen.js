@@ -81,7 +81,7 @@ const MainScreen = () => {
                 author: book.best_book.author.name,
                 authorId: book.best_book.author.id,
                 rating: book.average_rating,
-                img: book.best_book.small_image_url,
+                img: book.best_book.image_url,
                 day: book.original_publication_day,
                 month: book.original_publication_month,
                 year: book.original_publication_year,
@@ -89,11 +89,9 @@ const MainScreen = () => {
             }
           );
           
-          
-
           setSearchInfo({
-            totalResults: bookResp.GoodreadsResponse.search.['total-results'],
-            pages: bookResp.GoodreadsResponse.search.['total-results']/20+1
+            totalResults: bookResp.GoodreadsResponse.search['total-results'],
+            pages: bookResp.GoodreadsResponse.search['total-results']/20+1
           })
           
           setResults(card);
@@ -112,6 +110,10 @@ const MainScreen = () => {
         } else {
           setErrors("No results were found for your query, please try again.");
           setResults([]);
+          setSearchInfo({
+            totalResults: 0,
+            pages: 0
+          })
         }
       });
     }
@@ -122,19 +124,27 @@ const MainScreen = () => {
   //console.log(errors);
   return (
     <div className="main">
+      <div className='search' style={{display:'flex',justifyContent:'center'}}>
       <TextField
+        style={{width:'16em'}}
+        variant='outlined'
         inputRef={(comp) => (searchField = comp)}
-        label="Search"
+        label="Search by title, author or ISBN"
       ></TextField>
+      <Button onClick={handleSearch} variant='contained' color='primary'>Search</Button>
+      </div> 
       <br />
-      <Button onClick={handleSearch}>Search</Button>
-      <br />
-      <Typography variant='body1'>Found {searchInfo.totalResults} results matching your query</Typography>
+      {(query.search.length>0 && errors.length === 0)&&
+      (<div>
+         <Typography variant='body1'>Found {searchInfo.totalResults} results matching your query: {query.search}</Typography>
       <BooksPagination 
       count={searchInfo.pages.toFixed(0)}
       page={page}
       handleChange={handleChange}
       />
+      </div>      
+      )
+    }      
       <div
         className="cardContainer"
         style={{
@@ -143,19 +153,19 @@ const MainScreen = () => {
           gridRowGap: "1em",
           justifyItems:'center'
         }}
-      >
-        
+      >      
         {Array.isArray(results)
           ? results.map((item) => {
               return (
                 <BookCard
+                  style={{width: "10em", Minheight: "20em", border: "1px solid grey", textAlign:'center' }}
                   key={item.key} 
-                  title={item.title}
-                  author={item.author} 
+                  title={item.title.replace(/ *\([^)]*\) */g, "")}
+                  author={'By: '+ item.author} 
                   authorId={item.authorId}
                   img={item.img}
-                  rating={item.rating}
-                  published={item.day + "." + item.month + "." + item.year}
+                  rating={'Rating: '+item.rating}
+                  published={'Published: '+item.year}
                 />
               );
             })
@@ -164,7 +174,7 @@ const MainScreen = () => {
           <BookCard
             title={results.best_book.title}
             author={results.best_book.author.name}
-            img={results.best_book.small_image_url}
+            img={results.best_book.image_url}
             rating={results.average_rating}
             published={
               results.original_publication_day +
@@ -176,7 +186,18 @@ const MainScreen = () => {
           />
         )}
       </div>
-
+      {(query.search.length>0 && errors.length === 0)&&
+      (<div>
+         
+      <BooksPagination 
+      count={searchInfo.pages.toFixed(0)}
+      page={page}
+      handleChange={handleChange}
+      />
+      </div>
+       
+      )
+    }
       {errors.length > 0 ? (
         <Typography variant="body1" color="secondary">
           {errors}

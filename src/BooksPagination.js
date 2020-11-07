@@ -15,7 +15,7 @@ const BooksPagination = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root} style={{justifyContent:'flex-end !important'}}>
+    <div className={classes.root} style={{display:'flex', justifyContent:'center', margin:'1em 0 1em 0'}}>
       <Pagination
         count={props.count}
         page={props.page}

@@ -37,18 +37,22 @@ const BookCard = (props) => {
   return (
     <Card
       className={classes.root}
-      style={{ width: "10em", Minheight: "20em", border: "1px solid grey" }}
+      style={props.style}
     >
-      {props.authorId}
+      
       <CardContent>
-        <img src={props.img} alt="Book Image" style={{ height: "5em" }} />
-        <Typography variant="h6">{props.title}</Typography>
+      <span style={{visibility:'hidden', position:'absolute'}}>{props.authorId}</span>
+        <img src={props.img} alt="Book Image" style={{ height: "12em" }} />
+        <Typography variant="h6" style={{textAlign:'center'}}>{props.title}</Typography>
         <Typography variant="body1">{props.isbn}</Typography>
         <Typography variant="body1">{props.reviewCount}</Typography>
-        <Typography variant="body1">{props.link}</Typography>
+  <Typography variant="body1"><a href={props.link} target="_blank">{props.link}</a></Typography>
         <Typography variant="body1">{props.pages}</Typography>
         <Typography variant="body1">{props.format}</Typography>
+        <Typography variant="body1">{props.rating}</Typography>
         <Typography variant="body1">{props.ratingCount}</Typography>
+        <Typography variant="body1">{props.published}</Typography>
+        <br/>
         <Typography variant="body1">{props.desc}</Typography>
         <Typography variant="body1">
           <Link to="/authorScreen" onClick={handleAuthorClick}>
@@ -56,8 +60,8 @@ const BookCard = (props) => {
           </Link>
         </Typography>
 
-        <Typography variant="body1">{props.rating}</Typography>
-        <Typography variant="body1">{props.published}</Typography>
+        
+        
       </CardContent>
     </Card>
   );

@@ -2,10 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import AppContext from "./AppContext";
 import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import BookCard from "./BookCard";
-
+import BooksPagination from "./BooksPagination";
 const AuthorScreen = () => {
   //Get author name and ID from global state
   const [globalState, setGlobalState] = useContext(AppContext);
@@ -24,6 +23,13 @@ const AuthorScreen = () => {
   });
   const [bookQuery, setBookQuery] = useState("");
   const [authorBookResults, setAuthorBookResults] = useState([]);
+  const [page, setPage] = useState(1);
+  const [searchInfo, setSearchInfo] = useState({
+    totalResults: 0,
+    pages: 0,
+  });
+  // Variable for HTML parser
+  const parseHtml = require("html-react-parser");
 
   // Variables for Fast Xml Parser
   const parser = require("fast-xml-parser");
@@ -51,6 +57,11 @@ const AuthorScreen = () => {
   const handleAuthorBooks = () => {
     setBookQuery(globalState.authorId);
   };
+  // Function to handle pagination
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
   // Using Axios to get author details from Good Reads API.
   // Usign cors-anywhere to bypass cors
   useEffect(() => {
@@ -58,14 +69,18 @@ const AuthorScreen = () => {
       `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/author/show/${globalState.authorId}?format=xml&key=${apiKey}`
     ).then((response) => {
       const authorResp = parser.parse(response.data, [options]);
-      //console.log(authorResp);
+      console.log(authorResp);
       setAuthorData({
         name: authorResp.GoodreadsResponse.author.name,
         fans: authorResp.GoodreadsResponse.author.fans_count,
         image: authorResp.GoodreadsResponse.author.image_url,
-        about: authorResp.GoodreadsResponse.author.about,
+        about: parseHtml(authorResp.GoodreadsResponse.author.about),
         followers: authorResp.GoodreadsResponse.author.author_followers_count,
         hometown: authorResp.GoodreadsResponse.author.hometown,
+      });
+      setSearchInfo({
+        totalResults: authorResp.GoodreadsResponse.author.works_count,
+        pages: authorResp.GoodreadsResponse.author.works_count / 30 + 1,
       });
     });
   }, [globalState.authorId]);
@@ -74,7 +89,7 @@ const AuthorScreen = () => {
   // Usign cors-anywhere to bypass cors
   useEffect(() => {
     Axios.get(
-      `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/author/list/${bookQuery}?format=xml&key=${apiKey}`
+      `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/author/list/${bookQuery}?format=xml&key=${apiKey}&page=${page}`
     ).then((response) => {
       const authorBooksResp = parser.parse(response.data, [options]);
       console.log(authorBooksResp);
@@ -84,7 +99,7 @@ const AuthorScreen = () => {
             return {
               key: authorBook.id,
               title: authorBook.title,
-              isbn: authorBook.isbn,
+              isbn: authorBook.isbn13,
               reviewCount: authorBook.text_reviews_count,
               img: authorBook.image_url,
               link: authorBook.link,
@@ -93,61 +108,88 @@ const AuthorScreen = () => {
               published: authorBook.publication_year,
               rating: authorBook.average_rating,
               ratingCount: authorBook.ratings_count,
-              desc: authorBook.description,
+              desc: parseHtml(authorBook.description),
             };
           }
         );
         setAuthorBookResults(authorBookCard);
       }
     });
-  }, [bookQuery]);
+  }, [bookQuery, page]);
 
   return (
     <div>
-      <Typography variant="h6">Author: {globalState.author}</Typography>
-      <Typography variant="h6">ID: {globalState.authorId}</Typography>
-      <ul>
-        <li>{authorData.name}</li>
-        <li>{authorData.fans}</li>
-        <li>{authorData.image}</li>
-        <li>{authorData.about}</li>
-        <li>{authorData.followers}</li>
-        <li>{authorData.hometown}</li>
-      </ul>
-      <Button variant="contained" onClick={handleAuthorBooks}>
-        Show books
-      </Button>
+      <div style={{ display: "grid", justifyItems: "center" }}>
+        <img
+          src={authorData.image}
+          style={{ height: "30em", textAlign: "center" }}
+        />
+        <Typography variant="h5">{authorData.name}</Typography>
+        <Typography variant="body1">Fans: {authorData.fans}</Typography>
+        <Typography variant="body1">
+          Followers: {authorData.followers}{" "}
+        </Typography>
+        <Typography variant="body1">
+          Hometown: {authorData.hometown}{" "}
+        </Typography>
+        <br />
+        <Typography variant="h6">About the author</Typography>
+        <br />
+        <Typography
+          variant="body2"
+          style={{ textAlign: "justify", minWidth: "30em", maxWidth: "80em" }}
+        >
+          {authorData.about}
+        </Typography>
+        <br />
+        <Button variant="contained" onClick={handleAuthorBooks}>
+          Show author's books
+        </Button>
+      </div>
+
+      {bookQuery.length != "" ? (
+        <BooksPagination
+          count={searchInfo.pages.toFixed(0)}
+          page={page}
+          handleChange={handleChange}
+        />
+      ) : null}
       <div
         className="cardContainer"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gridRowGap: "1em",
-          justifyItems:'center'
+          justifyItems: "center",
         }}
       >
-            {Array.isArray(authorBookResults)&& (
-          authorBookResults.map((authorBookItem)=>{
-              return (
-                  <BookCard
-                  key={authorBookItem.key}
-                  img={authorBookItem.img}
-                  title={authorBookItem.title}
-                  isbn={authorBookItem.isbn}
-                  reviewCount={authorBookItem.reviewCount}
-                  link={authorBookItem.link}
-                  pages={authorBookItem.pages}
-                  format={authorBookItem.format}
-                  ratingCount={authorBookItem.ratingCount}
-                  rating={authorBookItem.rating}
-                  published={authorBookItem.published}
-                  desc={authorBookItem.desc}
-                  />
-              )
-          })
-      )}
+        {Array.isArray(authorBookResults) &&
+          authorBookResults.map((authorBookItem) => {
+            return (
+              <BookCard
+                style={{
+                  width: "30em",
+                  Minheight: "20em",
+                  border: "1px solid grey",
+                  textAlign: "center",
+                }}
+                key={authorBookItem.key}
+                img={authorBookItem.img}
+                title={authorBookItem.title}
+                isbn={"ISBN: " + authorBookItem.isbn}
+                reviewCount={"Reviews: " + authorBookItem.reviewCount}
+                link={authorBookItem.link}
+                pages={'Pages: '+authorBookItem.pages}
+                format={'Format: '+authorBookItem.format}
+                ratingCount={"Number of ratings: "+authorBookItem.ratingCount}
+                rating={"Rating: "+authorBookItem.rating}
+                published={'Published: '+authorBookItem.published}
+                
+                desc={parseHtml(String(authorBookItem.desc))}
+              />
+            );
+          })}
       </div>
-      
     </div>
   );
 };

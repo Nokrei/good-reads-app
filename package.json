@@ -11,6 +11,7 @@
     "axios": "^0.21.0",
     "cors-anywhere": "^0.4.3",
     "fast-xml-parser": "^3.17.4",
+    "html-react-parser": "^0.14.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-axios": "^2.0.3",
