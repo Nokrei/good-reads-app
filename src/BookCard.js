@@ -50,11 +50,17 @@ const BookCard = (props) => {
         </Typography>
         <Typography variant="body1">{props.isbn}</Typography>
         <Typography variant="body1">{props.reviewCount}</Typography>
-        <Typography variant="body1">
+        {(globalState.authorId.length!='')&&(
+          <Typography variant="body1">
           <a href={props.link} target="_blank">
             Goodreads page
           </a>
         </Typography>
+        )
+        
+        }
+        
+
         <Typography variant="body1">{props.pages}</Typography>
         <Typography variant="body1">{props.format}</Typography>
         <Typography variant="body1">{props.rating}</Typography>

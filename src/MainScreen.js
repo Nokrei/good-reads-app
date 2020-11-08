@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
+import AppContext from "./AppContext";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -10,7 +11,6 @@ import preloader from "./resources/99.gif";
 const MainScreen = () => {
   // Custom hook to detect browser width and adjust style accodringly
   const { width } = useWindowDimensions();
-
   const [gridClass, setGridClass] = useState("");
   useEffect(() => {
     if (width > 1024) {
@@ -19,6 +19,9 @@ const MainScreen = () => {
       setGridClass("main__cardContainer--narrow");
     }
   }, [width]);
+
+  //Use global state to hide Goodreads book link.
+  const [globalState, setGlobalState] = useContext(AppContext);
 
   // Variable to capture value of user's search
   let searchField;
@@ -69,16 +72,24 @@ const MainScreen = () => {
       ...query,
       search: searchField.value,
     });
+    setGlobalState({
+      author: "",
+      authorId: "",
+    });
   };
 
   // Function to handle search on key down (enter)
   // GoodReads API has a rate limit of 1 per s
-  // so do not want to continuously search with every key stroke. 
+  // so do not want to continuously search with every key stroke.
   const handleKeyDown = (event) => {
     if (event.keyCode === 13) {
       setQuery({
         ...query,
         search: searchField.value,
+      });
+      setGlobalState({
+        author: "",
+        authorId: "",
       });
     }
   };

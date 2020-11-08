@@ -10,6 +10,7 @@ import AuthorScreen from "./AuthorScreen";
 const App = () => {
   const [globalState, setGlobalState] = useState({
     author: "",
+    authorId:''
   });
   const theTheme = createMuiTheme({
     typography: {
